@@ -1,23 +1,24 @@
 {
-  "name": "@hot-wallet/sdk",
+  "name": "hot-wallet-connect-example",
   "private": true,
   "version": "0.1.0",
   "type": "module",
   "scripts": {
     "start": "vite",
-    "build": "tsc -b && vite build"
+    "build": "vite build"
   },
   "dependencies": {
+    "@hot-wallet/sdk": "^0.1.6",
     "@solana/wallet-adapter-base": "^0.9.23",
-    "@solana/web3.js": "^1.95.0",
     "@solana/wallet-adapter-react": "^0.15.35",
     "@solana/wallet-adapter-react-ui": "^0.9.35",
-    "viem": "^2.18.1",
-    "wagmi": "^2.12.1",
+    "@solana/web3.js": "^1.95.0",
+    "@tanstack/react-query": "^5.51.11",
+    "@tonconnect/ui-react": "^2.0.6",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "@tanstack/react-query": "^5.51.11",
-    "@tonconnect/ui-react": "^2.0.6"
+    "viem": "^2.18.1",
+    "wagmi": "^2.12.1"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
@@ -29,8 +30,8 @@
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.7",
-    "vite-plugin-node-polyfills": "^0.22.0",
     "typescript": "^5.2.2",
-    "vite": "^5.3.4"
+    "vite": "^5.3.4",
+    "vite-plugin-node-polyfills": "^0.22.0"
   }
 }

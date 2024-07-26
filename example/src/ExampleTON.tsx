@@ -8,7 +8,7 @@ import {
 import { FC } from "react";
 
 // ALL MAGIC THERE!
-import "../../src/adapter/ton";
+import "@hot-wallet/sdk/adapter/ton";
 
 export const ExampleTON: FC = () => {
   return (

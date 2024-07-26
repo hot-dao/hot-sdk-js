@@ -15,7 +15,7 @@ import { useEffect } from "react";
 import { parseEther } from "viem";
 
 // ALL MAGIC THERE!!
-import "../../src/adapter/evm";
+import "@hot-wallet/sdk/adapter/evm";
 
 export const config = createConfig({
   chains: [base, bsc],
