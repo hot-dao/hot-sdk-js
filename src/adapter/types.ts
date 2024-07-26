@@ -1,4 +1,4 @@
-import { SendOptions } from "@solana/web3.js";
+import type { SendOptions } from "@solana/web3.js";
 
 export type InjectedState = {
   telegramId: number;
@@ -50,6 +50,9 @@ export interface HotResponse {
 
 export type HotInteractor = {
   isInjected: boolean;
-  request<T extends keyof HotResponse>(method: T, request: HotRequest[T]): Promise<HotResponse[T]>;
+  request<T extends keyof HotResponse>(
+    method: T,
+    request: HotRequest[T]
+  ): Promise<HotResponse[T]>;
   connection: Promise<InjectedState | null>;
 };

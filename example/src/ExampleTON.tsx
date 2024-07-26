@@ -1,10 +1,14 @@
-import { useTonConnectUI, useTonWallet } from "@tonconnect/ui-react";
-
+import {
+  useTonConnectUI,
+  useTonWallet,
+  TonConnect,
+  TonConnectButton,
+  TonConnectUIProvider,
+} from "@tonconnect/ui-react";
 import { FC } from "react";
-import { TonConnect, TonConnectButton, TonConnectUIProvider } from "@tonconnect/ui-react";
 
 // ALL MAGIC THERE!
-import "../adapter/ton";
+import "../../src/adapter/ton";
 
 export const ExampleTON: FC = () => {
   return (

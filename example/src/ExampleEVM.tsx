@@ -15,7 +15,7 @@ import { useEffect } from "react";
 import { parseEther } from "viem";
 
 // ALL MAGIC THERE!!
-import "../adapter/evm";
+import "../../src/adapter/evm";
 
 export const config = createConfig({
   chains: [base, bsc],

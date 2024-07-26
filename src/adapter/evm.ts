@@ -1,5 +1,11 @@
 import { InjectedHOT } from "./interactor";
 
+declare global {
+  interface Window {
+    ethereum: any;
+  }
+}
+
 const ethereumProvider = {
   on() {},
   isHereWallet: true,

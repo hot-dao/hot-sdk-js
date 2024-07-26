@@ -6,7 +6,7 @@ import { WalletModalProvider, WalletMultiButton } from "@solana/wallet-adapter-r
 import "@solana/wallet-adapter-react-ui/styles.css";
 
 // ALL MAGIC THERE!!
-import { HotWalletAdapter } from "../adapter/solana";
+import { HotWalletAdapter } from "../../src/adapter/solana";
 
 export const ExampleSolana: FC = () => {
   const network = WalletAdapterNetwork.Mainnet;
