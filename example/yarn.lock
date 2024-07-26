@@ -415,14 +415,6 @@
     ethereum-cryptography "^2.0.0"
     micro-ftch "^0.3.1"
 
-"@hot-wallet/sdk@^0.1.6":
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/@hot-wallet/sdk/-/sdk-0.1.6.tgz#fd3389aa5473a2abc538084d6448130737238ae2"
-  integrity sha512-oqrkW9Eqc74RY8/BjowwFYyZR66izXsV9V1c3awmSkem0h1LMKiB1cF3U3PafCgQfQ0UKhnAgYoJr73vuMVZGA==
-  dependencies:
-    "@solana/wallet-adapter-base" "^0.9.23"
-    "@solana/web3.js" "^1.95.0"
-
 "@humanwhocodes/config-array@^0.11.14":
   version "0.11.14"
   resolved "https://registry.yarnpkg.com/@humanwhocodes/config-array/-/config-array-0.11.14.tgz#d78e481a039f7566ecc9660b4ea7fe6b1fec442b"

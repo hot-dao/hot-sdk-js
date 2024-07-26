@@ -2,8 +2,8 @@
   {
     "app_name": "hot",
     "name": "HOT",
-    "image": "https://tonkeeper.com/assets/tonconnect-icon.png",
-    "tondns": "app.herewallet.my",
+    "image": "https://storage.herewallet.app/logo.png",
+    "tondns": "wallet.hot",
     "about_url": "https://hotdao.ai",
     "universal_url": "https://hotdao.ai",
     "bridge": [

@@ -30,7 +30,7 @@ export const ExampleSolana: FC = () => {
 
 export const SendSOLToRandomAddress: FC = () => {
   const { connection } = useConnection();
-  const { publicKey, sendTransaction } = useWallet();
+  const { publicKey, signMessage, sendTransaction } = useWallet();
 
   const onClick = useCallback(async () => {
     if (!publicKey) throw new WalletNotConnectedError();
@@ -52,8 +52,19 @@ export const SendSOLToRandomAddress: FC = () => {
   }, [publicKey, sendTransaction, connection]);
 
   return (
-    <button onClick={onClick} disabled={!publicKey}>
-      Send SOL to a random address!
-    </button>
+    <>
+      <button onClick={onClick} disabled={!publicKey}>
+        Send SOL to a random address!
+      </button>
+      <button
+        disabled={!publicKey}
+        onClick={async () => {
+          const sig = await signMessage(Buffer.from("Hello world", "utf8"));
+          alert(Buffer.from(sig).toString("hex"));
+        }}
+      >
+        Sign message
+      </button>
+    </>
   );
 };

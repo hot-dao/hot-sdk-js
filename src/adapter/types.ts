@@ -13,8 +13,7 @@ export interface HotRequest {
 
   "solana:connect": {};
   "solana:signMessage": { message: string };
-  "solana:signTransaction": { transaction: string };
-  "solana:signAllTransactions": { transactions: string[] };
+  "solana:signTransactions": { transactions: string[] };
   "solana:signAndSendTransaction": {
     sendOptions: SendOptions;
     transaction: string;
@@ -32,8 +31,7 @@ export interface HotRequest {
 }
 
 export interface HotResponse {
-  "solana:signTransaction": { transaction: string };
-  "solana:signAllTransactions": { transactions: string[] };
+  "solana:signTransactions": { transactions: string[] };
   "solana:signAndSendTransaction": { signature: string };
   "solana:signMessage": { signature: string };
   "solana:connect": { publicKey: string };
@@ -50,9 +48,6 @@ export interface HotResponse {
 
 export type HotInteractor = {
   isInjected: boolean;
-  request<T extends keyof HotResponse>(
-    method: T,
-    request: HotRequest[T]
-  ): Promise<HotResponse[T]>;
+  request<T extends keyof HotResponse>(method: T, request: HotRequest[T]): Promise<HotResponse[T]>;
   connection: Promise<InjectedState | null>;
 };

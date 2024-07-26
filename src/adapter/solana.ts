@@ -89,8 +89,7 @@ export class HotWalletAdapter extends BaseMessageSignerWalletAdapter {
       if (this.readyState !== WalletReadyState.Installed) throw new WalletNotReadyError();
 
       this._connecting = true;
-      const connection = await this.hot.connection;
-      const publicKey = connection?.solana.publicKey;
+      const { publicKey } = await this.hot.request("solana:connect", {});
       if (!publicKey) throw new WalletConnectionError();
 
       this._publicKey = new PublicKey(publicKey);
@@ -146,12 +145,11 @@ export class HotWalletAdapter extends BaseMessageSignerWalletAdapter {
   async signTransaction<T extends Transaction | VersionedTransaction>(transaction: T): Promise<T> {
     try {
       if (!this._publicKey) throw new WalletNotConnectedError();
-      try {
-        const result = await this.hot.request("solana:signTransaction", {
-          transaction: transaction.serialize().toString("base64"),
-        });
 
-        return this._parseTransaction(result.transaction) as any;
+      try {
+        const tx = transaction.serialize().toString("base64");
+        const result = await this.hot.request("solana:signTransactions", { transactions: [tx] });
+        return this._parseTransaction(result.transactions[0]) as any;
       } catch (error: any) {
         throw new WalletSignTransactionError(error?.message, error);
       }
@@ -164,12 +162,10 @@ export class HotWalletAdapter extends BaseMessageSignerWalletAdapter {
   async signAllTransactions<T extends Transaction | VersionedTransaction>(transactions: T[]): Promise<T[]> {
     try {
       if (!this._publicKey) throw new WalletNotConnectedError();
+
       try {
         const tx = transactions.map((t) => t.serialize().toString("base64"));
-        const response = await this.hot.request("solana:signAllTransactions", {
-          transactions: tx,
-        });
-
+        const response = await this.hot.request("solana:signTransactions", { transactions: tx });
         return response.transactions.map<any>(this._parseTransaction);
       } catch (error: any) {
         throw new WalletSignTransactionError(error?.message, error);
