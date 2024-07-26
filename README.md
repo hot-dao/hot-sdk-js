@@ -1,12 +1,28 @@
-# HOT Wallet Connector for Injected Apps
+# HOT Wallet SDK
 
-## Solana Connect
+## Connector for Injected Apps
 
-**Additionals deps:**
+- Solana Connect
+- TON Connect
+- EVM Connect
+- NEAR Connect (coming soon)
+
+### Solana Connect
+
 `yarn add @solana/wallet-adapter-base @solana/web3.js`
 
-Use as Solana Wallet Adapater
+```ts
+import "@hot-wallet/sdk/adapter/solana";
+```
+
+### TON Connect
 
 ```ts
-import "@hot-wallet/sdk";
+import "@hot-wallet/sdk/adapter/ton";
+```
+
+### EVM Connect
+
+```ts
+import "@hot-wallet/sdk/adapter/evm";
 ```
