@@ -26,3 +26,13 @@ import "@hot-wallet/sdk/adapter/ton";
 ```ts
 import "@hot-wallet/sdk/adapter/evm";
 ```
+
+## Debug Injected App
+
+Default example app with chains connector:
+
+https://beta.herewallet.app/hot/browser/hot-example-connect.surge.sh
+
+You can replace hot-example-connect.surge.sh with your own domain (or localhost:PORT) to debug app!
+
+**Happy hacking**
