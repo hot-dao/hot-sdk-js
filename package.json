@@ -1,9 +1,19 @@
 {
   "name": "@hot-wallet/sdk",
-  "version": "0.1.1",
+  "version": "0.1.6",
   "type": "module",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
+  "exports": {
+    "./adapter": "./build/adapter/index.js",
+    "./adapter/ton": "./build/adapter/ton.js",
+    "./adapter/solana": "./build/adapter/solana.js",
+    "./adapter/evm": "./build/adapter/evm.js",
+    ".": "./build/index.js"
+  },
+  "directories": {
+    "build": "build"
+  },
   "scripts": {
     "build": "tsc",
     "example": "cd example && yarn start"

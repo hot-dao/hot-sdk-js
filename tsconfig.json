@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "esModuleInterop": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "alwaysStrict": true,
     "allowJs": true,
     "strict": true,
@@ -12,8 +12,8 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "target": "es2015",
-    "module": "CommonJS",
+    "target": "ES6",
+    "module": "ES2020",
     "lib": ["ESNext", "dom"]
   },
   "include": ["./src"]
