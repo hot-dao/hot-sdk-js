@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "alwaysStrict": true,
+    "allowJs": true,
+    "strict": true,
+    "rootDir": "./adapter",
+    "outDir": "./build",
+    "declaration": true,
+    "sourceMap": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "es2015",
+    "module": "CommonJS",
+    "lib": ["ESNext", "dom"]
+  }
+}
