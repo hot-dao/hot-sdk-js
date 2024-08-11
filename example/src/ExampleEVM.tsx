@@ -35,7 +35,6 @@ const ConnectWallet = () => {
 
   useEffect(() => {
     reconnect();
-    connect({ connector: injected() });
   }, []);
 
   if (isConnected)

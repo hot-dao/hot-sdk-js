@@ -8,6 +8,8 @@
     "build": "vite build && echo '*' > dist/CORS"
   },
   "dependencies": {
+    "@near-wallet-selector/core": "^8.9.12",
+    "@near-wallet-selector/modal-ui-js": "^8.9.12",
     "@solana/wallet-adapter-base": "^0.9.23",
     "@solana/wallet-adapter-react": "^0.15.35",
     "@solana/wallet-adapter-react-ui": "^0.9.35",

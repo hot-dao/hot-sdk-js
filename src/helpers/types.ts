@@ -1,5 +1,6 @@
 import type { SendOptions } from "@solana/web3.js";
-import { SignedMessageNEP0413, SignMessageOptionsNEP0413, Transaction } from "./near";
+import { InjectedWallet } from "@near-wallet-selector/core/src/lib/wallet/wallet.types";
+import { SignedMessageNEP0413, SignMessageOptionsNEP0413 } from "./nep0314";
 
 export type InjectedState = {
   telegramId: number;
@@ -26,7 +27,7 @@ export interface HotRequest {
   "ton:send": {};
 
   "near:signMessage": SignMessageOptionsNEP0413;
-  "near:signAndSendTransaction": Transaction;
+  "near:signAndSendTransaction": Parameters<InjectedWallet["signAndSendTransaction"]>[0];
 
   ethereum: {
     method: string;

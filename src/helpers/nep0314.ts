@@ -2,7 +2,17 @@ import * as borsh from "borsh";
 import js_sha256 from "js-sha256";
 import { PublicKey } from "@near-js/crypto";
 
-import { SignedMessageNEP0413, SignMessageOptionsNEP0413 } from "./near";
+export type SignMessageOptionsNEP0413 = {
+  message: string; // The message that wants to be transmitted.
+  recipient: string; // The recipient to whom the message is destined (e.g. "alice.near" or "myapp.com").
+  nonce: number[]; // A nonce that uniquely identifies this instance of the message, denoted as a 32 bytes array (a fixed `Buffer` in JS/TS).
+};
+
+export type SignedMessageNEP0413 = {
+  signature: string;
+  publicKey: string;
+  accountId: string;
+};
 
 export class AuthPayload implements SignMessageOptionsNEP0413 {
   readonly message: string;

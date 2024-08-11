@@ -17,16 +17,22 @@ import { HotWalletAdapter } from "@hot-wallet/sdk/adapter/solana";
 const adapter = new HotWalletAdapter();
 
 // Or low level api
-const result = await HOT.request("solana:connect", {}); // See src/helpers/types (HotRequest)
+const result = await HOT.request("solana:connect", {});
+const result = await HOT.request("solana:signMessage", { ... });
+const result = await HOT.request("solana:signTransactions", { ... });
+const result = await HOT.request("solana:signAndSendTransaction", { ... });
 ```
 
 ### NEAR Connect
 
 ```ts
+import { setupHotWallet } from "@hot-wallet/adapter/near";
+// Setup near-wallet-selector with setupHotWallet()
+
+// Or use low level api
 import { HOT } from "@hot-wallet/sdk";
-// low level api
-const result = await HOT.request("near:signMessage", { ... }); // See src/helpers/types (HotRequest)
-const result = await HOT.request("near:signAndSendTransaction", { ... }); // See src/helpers/types (HotRequest)
+const result = await HOT.request("near:signMessage", { ... });
+const result = await HOT.request("near:signAndSendTransaction", { ... });
 ```
 
 ### TON Connect
@@ -39,8 +45,9 @@ import "@hot-wallet/sdk/adapter/ton";
 ### EVM Connect (Injected only)
 
 ```ts
-import "@hot-wallet/sdk/adapter/evm";
+import { ethereumProvider } from "@hot-wallet/sdk/adapter/evm";
 // After this you can use window.ethereum as you want
+// Or use web3 or etherjs with ethereumProvider like eip6963 standart
 ```
 
 ## Debug Injected App

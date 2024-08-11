@@ -1,6 +1,6 @@
 {
   "name": "@hot-wallet/sdk",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "type": "module",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
@@ -8,6 +8,7 @@
     "./adapter": "./build/adapter/index.js",
     "./adapter/ton": "./build/adapter/ton.js",
     "./adapter/solana": "./build/adapter/solana.js",
+    "./adapter/near": "./build/adapter/near.js",
     "./adapter/evm": "./build/adapter/evm.js",
     ".": "./build/index.js"
   },
@@ -21,6 +22,7 @@
   "dependencies": {
     "@near-js/crypto": "^1.2.4",
     "@near-js/utils": "^0.2.2",
+    "@near-wallet-selector/core": "^8.9.12",
     "@solana/wallet-adapter-base": "^0.9.23",
     "@solana/web3.js": "^1.95.0",
     "@tonconnect/sdk": "^3.0.5",
