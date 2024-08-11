@@ -1,4 +1,5 @@
-import { InjectedHOT } from "./interactor";
+import uuid4 from "uuid4";
+import HOT from "../hot";
 
 declare global {
   interface Window {
@@ -11,21 +12,18 @@ const ethereumProvider = {
   isHereWallet: true,
   isConnected: () => true,
   request: (data: any): Promise<any> => {
-    return InjectedHOT.request("ethereum", data);
+    return HOT.request("ethereum", data);
   },
 };
 
-if (InjectedHOT.isInjected) {
+if (HOT.isInjected) {
   window.ethereum = undefined;
   window.ethereum = ethereumProvider;
 }
 
 async function announceProvider() {
   if (typeof window === "undefined") return;
-  const injected = await InjectedHOT.connection;
-  if (injected == null) return;
-
-  if (InjectedHOT.isInjected) {
+  if (HOT.isInjected) {
     window.ethereum = undefined;
     window.ethereum = ethereumProvider;
   }
@@ -37,8 +35,8 @@ async function announceProvider() {
         info: {
           name: "HOT",
           icon: "https://storage.herewallet.app/logo.png",
-          rdns: "ai.hotdao",
-          uuid: crypto.randomUUID(),
+          rdns: "org.hot-labs",
+          uuid: uuid4(),
         },
       }),
     })

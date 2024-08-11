@@ -22,11 +22,11 @@ import {
   VersionedTransaction,
 } from "@solana/web3.js";
 
-import { InjectedHOT } from "./interactor";
+import HOT from "../hot";
 
 export const HotWalletName = "HOT" as WalletName<"HOT">;
 
-if (InjectedHOT.isInjected) {
+if (HOT.isInjected) {
   localStorage.setItem("walletName", `"HOT"`);
 }
 
@@ -43,14 +43,11 @@ export class HotWalletAdapter extends BaseMessageSignerWalletAdapter {
       ? WalletReadyState.Unsupported
       : WalletReadyState.NotDetected;
 
-  private hot = InjectedHOT;
-
   constructor() {
     super();
     this._publicKey = null;
     this._connecting = false;
-    this.hot.connection.then((state) => {
-      console.log({ state });
+    HOT.connection.then((state) => {
       if (!state) return;
       this._readyState = WalletReadyState.Installed;
       this.emit("readyStateChange", this._readyState);
@@ -89,7 +86,7 @@ export class HotWalletAdapter extends BaseMessageSignerWalletAdapter {
       if (this.readyState !== WalletReadyState.Installed) throw new WalletNotReadyError();
 
       this._connecting = true;
-      const { publicKey } = await this.hot.request("solana:connect", {});
+      const { publicKey } = await HOT.request("solana:connect", {});
       if (!publicKey) throw new WalletConnectionError();
 
       this._publicKey = new PublicKey(publicKey);
@@ -126,7 +123,7 @@ export class HotWalletAdapter extends BaseMessageSignerWalletAdapter {
         }
 
         sendOptions.preflightCommitment = sendOptions.preflightCommitment || connection.commitment;
-        const { signature } = await this.hot.request("solana:signAndSendTransaction", {
+        const { signature } = await HOT.request("solana:signAndSendTransaction", {
           transaction: transaction.serialize({ requireAllSignatures: false }).toString("base64"),
           sendOptions,
         });
@@ -148,7 +145,7 @@ export class HotWalletAdapter extends BaseMessageSignerWalletAdapter {
 
       try {
         const tx = transaction.serialize().toString("base64");
-        const result = await this.hot.request("solana:signTransactions", { transactions: [tx] });
+        const result = await HOT.request("solana:signTransactions", { transactions: [tx] });
         return this._parseTransaction(result.transactions[0]) as any;
       } catch (error: any) {
         throw new WalletSignTransactionError(error?.message, error);
@@ -165,7 +162,7 @@ export class HotWalletAdapter extends BaseMessageSignerWalletAdapter {
 
       try {
         const tx = transactions.map((t) => t.serialize().toString("base64"));
-        const response = await this.hot.request("solana:signTransactions", { transactions: tx });
+        const response = await HOT.request("solana:signTransactions", { transactions: tx });
         return response.transactions.map<any>(this._parseTransaction);
       } catch (error: any) {
         throw new WalletSignTransactionError(error?.message, error);
@@ -180,7 +177,7 @@ export class HotWalletAdapter extends BaseMessageSignerWalletAdapter {
     try {
       if (!this._publicKey) throw new WalletNotConnectedError();
       try {
-        const { signature } = await this.hot.request("solana:signMessage", {
+        const { signature } = await HOT.request("solana:signMessage", {
           message: Buffer.from(message).toString("base64"),
         });
 

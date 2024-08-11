@@ -7,15 +7,16 @@ import {
 } from "@tonconnect/ui-react";
 import { FC } from "react";
 
-// ALL MAGIC THERE!
+// // ALL MAGIC THERE!
 import "@hot-wallet/sdk/adapter/ton";
+
+const connector = new TonConnect({
+  walletsListSource: "/wallets-v2.json",
+});
 
 export const ExampleTON: FC = () => {
   return (
-    <TonConnectUIProvider
-      connector={new TonConnect({ walletsListSource: "/wallets-v2.json" })}
-      manifestUrl="/tonconnect-manifest.json"
-    >
+    <TonConnectUIProvider connector={connector} manifestUrl="/tonconnect-manifest.json">
       <div className="view">
         <p>TON Example</p>
         <TonConnectButton />
@@ -45,5 +46,3 @@ const SendTONToRandomAddress = () => {
     </button>
   );
 };
-
-export default SendTONToRandomAddress;

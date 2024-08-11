@@ -1,4 +1,5 @@
 import type { SendOptions } from "@solana/web3.js";
+import { SignedMessageNEP0413, SignMessageOptionsNEP0413, Transaction } from "./near";
 
 export type InjectedState = {
   telegramId: number;
@@ -24,6 +25,9 @@ export interface HotRequest {
   "ton:disconnect": {};
   "ton:send": {};
 
+  "near:signMessage": SignMessageOptionsNEP0413;
+  "near:signAndSendTransaction": Transaction;
+
   ethereum: {
     method: string;
     params: any[];
@@ -41,13 +45,9 @@ export interface HotResponse {
   "ton:restoreConnection": {};
   "ton:send": {};
 
-  ethereum: any;
+  "near:signMessage": SignedMessageNEP0413;
+  "near:signAndSendTransaction": { transaction: string };
 
   initialized: InjectedState;
+  ethereum: any;
 }
-
-export type HotInteractor = {
-  isInjected: boolean;
-  request<T extends keyof HotResponse>(method: T, request: HotRequest[T]): Promise<HotResponse[T]>;
-  connection: Promise<InjectedState | null>;
-};

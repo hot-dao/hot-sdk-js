@@ -1,6 +1,6 @@
-import { InjectedHOT } from "./interactor";
+import HOT from "../hot";
 
-if (InjectedHOT.isInjected) {
+if (HOT.isInjected) {
   // @ts-ignore
   window.hot = {
     tonconnect: {
@@ -13,28 +13,28 @@ if (InjectedHOT.isInjected) {
       },
 
       walletInfo: {
-        name: "HOT",
+        name: "hotWallet",
         image: "https://storage.herewallet.app/logo.png",
-        about_url: "https://hotdao.ai",
+        about_url: "https://hot-labs.org",
       },
 
       protocolVersion: 2,
       isWalletBrowser: true,
 
       connect: (_: number, request: any) => {
-        return InjectedHOT.request("ton:connect", request);
+        return HOT.request("ton:connect", request);
       },
 
       restoreConnection: () => {
-        return InjectedHOT.request("ton:restoreConnection", {});
+        return HOT.request("ton:restoreConnection", {});
       },
 
       disconnect: () => {
-        return InjectedHOT.request("ton:disconnect", {});
+        return HOT.request("ton:disconnect", {});
       },
 
       send: async (request: any) => {
-        return InjectedHOT.request("ton:send", request);
+        return HOT.request("ton:send", request);
       },
 
       listen: () => {
