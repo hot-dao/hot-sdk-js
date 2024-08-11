@@ -6,12 +6,12 @@ import { ExampleNEAR } from "./ExampleNEAR";
 
 const App: FC = () => {
   return (
-    <div>
+    <>
       <ExampleTON />
       <ExampleSolana />
       <ExampleEVM />
       <ExampleNEAR />
-    </div>
+    </>
   );
 };
 

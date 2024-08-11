@@ -32,16 +32,13 @@ if (HOT.isInjected) {
 
 export class HotWalletAdapter extends BaseMessageSignerWalletAdapter {
   name = HotWalletName;
-  url = "https://hotdao.ai";
+  url = "https://hot-labs.org";
   icon = "https://storage.herewallet.app/logo.png";
   supportedTransactionVersions: ReadonlySet<TransactionVersion> = new Set(["legacy", 0]);
 
   private _connecting: boolean;
   private _publicKey: PublicKey | null;
-  private _readyState: WalletReadyState =
-    typeof window === "undefined" || typeof document === "undefined"
-      ? WalletReadyState.Unsupported
-      : WalletReadyState.NotDetected;
+  private _readyState = WalletReadyState.Installed;
 
   constructor() {
     super();

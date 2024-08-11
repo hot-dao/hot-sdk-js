@@ -79,6 +79,10 @@ button:focus-visible {
   padding: 2rem;
   text-align: center;
   width: 100%;
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
 }
 
 .view {
@@ -89,12 +93,18 @@ button:focus-visible {
   padding: 16px;
   gap: 12px;
   border: 1px solid purple;
-  margin-top: 24px;
   border-radius: 24px;
   padding-bottom: 24px;
+  width: calc(50% - 24px);
 }
 
 .view p {
   margin: 0;
   font-weight: bold;
+}
+
+@media screen and (max-width: 800px) {
+  .view {
+    width: 100%;
+  }
 }

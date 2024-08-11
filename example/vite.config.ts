@@ -6,8 +6,9 @@ import { fileURLToPath, URL } from "url";
 export default defineConfig({
   plugins: [nodePolyfills(), react()],
   resolve: {
-    alias: {
-      "@hot-wallet/sdk": fileURLToPath(new URL("../src", import.meta.url)),
-    },
+    alias:
+      process.env.NODE_ENV === "development"
+        ? { "@hot-wallet/sdk": fileURLToPath(new URL("../src", import.meta.url)) }
+        : {},
   },
 });

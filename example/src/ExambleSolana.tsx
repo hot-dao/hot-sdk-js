@@ -7,15 +7,15 @@ import "@solana/wallet-adapter-react-ui/styles.css";
 
 // ALL MAGIC THERE!!
 import { HotWalletAdapter } from "@hot-wallet/sdk/adapter/solana";
+const wallet = new HotWalletAdapter();
 
 export const ExampleSolana: FC = () => {
   const network = WalletAdapterNetwork.Mainnet;
-  const wallets = useMemo(() => [new HotWalletAdapter()], [network]);
-  const solanaRPC = "https://solana-mainnet.rpc.extrnode.com/2fccd8d8-c4d6-4a88-abf9-69977700cb44";
+  const solanaRPC = "https://api.mainnet-beta.solana.com";
 
   return (
     <ConnectionProvider endpoint={solanaRPC}>
-      <WalletProvider wallets={wallets} autoConnect>
+      <WalletProvider wallets={[wallet]} autoConnect>
         <WalletModalProvider>
           <div className="view">
             <p>Solana Example</p>
