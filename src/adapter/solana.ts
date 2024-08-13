@@ -6,7 +6,6 @@ import {
   WalletConnectionError,
   WalletError,
   WalletNotConnectedError,
-  WalletNotReadyError,
   WalletReadyState,
   WalletSendTransactionError,
   WalletSignMessageError,
@@ -22,7 +21,7 @@ import {
   VersionedTransaction,
 } from "@solana/web3.js";
 
-import HOT from "../hot";
+import HOT, { wait } from "../hot";
 
 export const HotWalletName = "HOT" as WalletName<"HOT">;
 
@@ -37,17 +36,15 @@ export class HotWalletAdapter extends BaseMessageSignerWalletAdapter {
   supportedTransactionVersions: ReadonlySet<TransactionVersion> = new Set(["legacy", 0]);
 
   private _connecting: boolean;
-  private _publicKey: PublicKey | null;
-  private _readyState = WalletReadyState.Installed;
+  private _publicKey: PublicKey | null = null;
+  private _readyState = WalletReadyState.NotDetected;
 
   constructor() {
     super();
     this._publicKey = null;
     this._connecting = false;
-    HOT.connection.then((state) => {
-      if (!state) return;
-      this._readyState = WalletReadyState.Installed;
-      this.emit("readyStateChange", this._readyState);
+    wait(100).then(() => {
+      this.emit("readyStateChange", WalletReadyState.Installed);
     });
   }
 
@@ -63,6 +60,16 @@ export class HotWalletAdapter extends BaseMessageSignerWalletAdapter {
     return this._readyState;
   }
 
+  _getLocalAccount() {
+    try {
+      const publicKey = localStorage.getItem("hot:solana-account");
+      if (publicKey == null) return null;
+      return new PublicKey(publicKey);
+    } catch {
+      return null;
+    }
+  }
+
   _parseTransaction(base64: string): Transaction | VersionedTransaction {
     const buf = Buffer.from(base64, "base64");
     try {
@@ -73,20 +80,28 @@ export class HotWalletAdapter extends BaseMessageSignerWalletAdapter {
   }
 
   async autoConnect(): Promise<void> {
-    if (this.readyState !== WalletReadyState.Installed) return;
-    await this.connect();
+    const account = this._getLocalAccount();
+    if (account) return await this.connect();
+    if (HOT.isInjected) return await this.connect();
   }
 
   async connect(): Promise<void> {
     try {
       if (this.connected || this.connecting) return;
-      if (this.readyState !== WalletReadyState.Installed) throw new WalletNotReadyError();
+
+      const account = this._getLocalAccount();
+      if (account && HOT.isInjected === false) {
+        this._publicKey = account;
+        this.emit("connect", account);
+        return;
+      }
 
       this._connecting = true;
       const { publicKey } = await HOT.request("solana:connect", {});
       if (!publicKey) throw new WalletConnectionError();
 
       this._publicKey = new PublicKey(publicKey);
+      localStorage.setItem("hot:solana-account", this._publicKey.toString());
       this.emit("connect", this._publicKey);
     } catch (error: any) {
       console.error(error);
@@ -98,6 +113,7 @@ export class HotWalletAdapter extends BaseMessageSignerWalletAdapter {
   }
 
   async disconnect(): Promise<void> {
+    localStorage.removeItem("hot:solana-account");
     this._publicKey = null;
     this.emit("disconnect");
   }

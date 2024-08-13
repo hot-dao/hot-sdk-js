@@ -56,7 +56,7 @@ export const ExampleNEAR: FC = () => {
 
 const SignMessage = () => {
   const singMessage = async () => {
-    const nonce = window.crypto.getRandomValues(new Uint8Array(32));
+    const nonce = Array.from(window.crypto.getRandomValues(new Uint8Array(32)));
     const request = { nonce, recipient: "Demo app", message: "Hello" };
 
     // Low level api or use wallet-selector adapter
@@ -66,8 +66,8 @@ const SignMessage = () => {
 
   const sendTx = async () => {
     // Low level api or use wallet-selector adapter
-    const result = await HOT.request("near:signAndSendTransaction", {
-      actions: [{ type: "Transfer", params: { amount: "0" } }],
+    await HOT.request("near:signAndSendTransaction", {
+      actions: [{ type: "Transfer", params: { deposit: "0" } }],
       receiverId: "game.hot.tg",
     });
   };

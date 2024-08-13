@@ -1,5 +1,5 @@
-import { FC, useMemo, useCallback } from "react";
-import { WalletNotConnectedError, WalletAdapterNetwork } from "@solana/wallet-adapter-base";
+import { FC, useCallback, useMemo } from "react";
+import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { useConnection, useWallet, ConnectionProvider, WalletProvider } from "@solana/wallet-adapter-react";
 import { Keypair, SystemProgram, Transaction, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { WalletModalProvider, WalletMultiButton } from "@solana/wallet-adapter-react-ui";
@@ -7,15 +7,14 @@ import "@solana/wallet-adapter-react-ui/styles.css";
 
 // ALL MAGIC THERE!!
 import { HotWalletAdapter } from "@hot-wallet/sdk/adapter/solana";
-const wallet = new HotWalletAdapter();
 
 export const ExampleSolana: FC = () => {
-  const network = WalletAdapterNetwork.Mainnet;
+  const wallets = useMemo(() => [new HotWalletAdapter()], []);
   const solanaRPC = "https://api.mainnet-beta.solana.com";
 
   return (
     <ConnectionProvider endpoint={solanaRPC}>
-      <WalletProvider wallets={[wallet]} autoConnect>
+      <WalletProvider wallets={wallets} autoConnect={true}>
         <WalletModalProvider>
           <div className="view">
             <p>Solana Example</p>
@@ -59,8 +58,8 @@ export const SendSOLToRandomAddress: FC = () => {
       <button
         disabled={!publicKey}
         onClick={async () => {
-          const sig = await signMessage(Buffer.from("Hello world", "utf8"));
-          alert(Buffer.from(sig).toString("hex"));
+          const sig = await signMessage?.(Buffer.from("Hello world", "utf8"));
+          if (sig) alert(Buffer.from(sig).toString("hex"));
         }}
       >
         Sign message
