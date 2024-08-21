@@ -35,18 +35,9 @@ export class HotWalletAdapter extends BaseMessageSignerWalletAdapter {
   icon = "https://storage.herewallet.app/logo.png";
   supportedTransactionVersions: ReadonlySet<TransactionVersion> = new Set(["legacy", 0]);
 
-  private _connecting: boolean;
+  private _connecting = false;
   private _publicKey: PublicKey | null = null;
-  private _readyState = WalletReadyState.NotDetected;
-
-  constructor() {
-    super();
-    this._publicKey = null;
-    this._connecting = false;
-    wait(100).then(() => {
-      this.emit("readyStateChange", WalletReadyState.Installed);
-    });
-  }
+  private _readyState = WalletReadyState.Installed;
 
   get publicKey() {
     return this._publicKey;
@@ -88,27 +79,29 @@ export class HotWalletAdapter extends BaseMessageSignerWalletAdapter {
   async connect(): Promise<void> {
     try {
       if (this.connected || this.connecting) return;
+      this._connecting = true;
 
       const account = this._getLocalAccount();
-      if (account && HOT.isInjected === false) {
+      if (account && !HOT.isInjected) {
+        await wait(100);
         this._publicKey = account;
         this.emit("connect", account);
+        this._connecting = false;
         return;
       }
 
-      this._connecting = true;
       const { publicKey } = await HOT.request("solana:connect", {});
       if (!publicKey) throw new WalletConnectionError();
 
       this._publicKey = new PublicKey(publicKey);
       localStorage.setItem("hot:solana-account", this._publicKey.toString());
       this.emit("connect", this._publicKey);
+      this._connecting = false;
     } catch (error: any) {
       console.error(error);
       this.emit("error", error);
-      throw error;
-    } finally {
       this._connecting = false;
+      throw error;
     }
   }
 
@@ -137,7 +130,7 @@ export class HotWalletAdapter extends BaseMessageSignerWalletAdapter {
 
         sendOptions.preflightCommitment = sendOptions.preflightCommitment || connection.commitment;
         const { signature } = await HOT.request("solana:signAndSendTransaction", {
-          transaction: transaction.serialize({ requireAllSignatures: false }).toString("base64"),
+          transaction: Buffer.from(transaction.serialize({ requireAllSignatures: false })).toString("base64"),
           sendOptions,
         });
 
@@ -157,7 +150,7 @@ export class HotWalletAdapter extends BaseMessageSignerWalletAdapter {
       if (!this._publicKey) throw new WalletNotConnectedError();
 
       try {
-        const tx = transaction.serialize().toString("base64");
+        const tx = Buffer.from(transaction.serialize({ requireAllSignatures: false })).toString("base64");
         const result = await HOT.request("solana:signTransactions", { transactions: [tx] });
         return this._parseTransaction(result.transactions[0]) as any;
       } catch (error: any) {
@@ -174,7 +167,10 @@ export class HotWalletAdapter extends BaseMessageSignerWalletAdapter {
       if (!this._publicKey) throw new WalletNotConnectedError();
 
       try {
-        const tx = transactions.map((t) => t.serialize().toString("base64"));
+        const tx = transactions.map((t) =>
+          Buffer.from(t.serialize({ requireAllSignatures: false })).toString("base64")
+        );
+
         const response = await HOT.request("solana:signTransactions", { transactions: tx });
         return response.transactions.map<any>(this._parseTransaction);
       } catch (error: any) {
