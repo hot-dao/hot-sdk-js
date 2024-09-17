@@ -13,10 +13,9 @@ export function setupHotWallet(): WalletModuleFactory<InjectedWallet> {
     return {
       id: "hot-wallet",
       type: "injected",
-
       metadata: {
         name: "HOT Wallet",
-        description: "HOT wallet in Telegram",
+        description: "Multichain wallet under HOT Protocol",
         downloadUrl: "https://herewallet.app",
         iconUrl: "https://storage.herewallet.app/logo.png",
         topLevelInjected: connection != null,

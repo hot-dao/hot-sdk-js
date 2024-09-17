@@ -30,6 +30,7 @@ export interface HotRequest {
   "near:signAndSendTransaction": Parameters<InjectedWallet["signAndSendTransaction"]>[0];
 
   ethereum: {
+    account?: { chain: number; address: string | null };
     method: string;
     params: any[];
   };

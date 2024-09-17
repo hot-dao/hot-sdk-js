@@ -7,12 +7,52 @@ declare global {
   }
 }
 
-const ethereumProvider = {
+export const ethereumProvider = {
   on() {},
-  isHereWallet: true,
-  isConnected: () => true,
-  request: (data: any): Promise<any> => {
-    return HOT.request("ethereum", data);
+  isHotWallet: true,
+  account: localStorage.getItem("hot-wallet-evm-account"),
+  chain: +(localStorage.getItem("hot-wallet-evm-chainId") || 1),
+  isConnected: () => HOT.isInjected || ethereumProvider.account != null,
+  request: async (data: any): Promise<any> => {
+    if (HOT.isInjected) return HOT.request("ethereum", data);
+
+    const account = { chain: ethereumProvider.chain, address: ethereumProvider.account };
+    switch (data.method) {
+      case "wallet_requestPermissions":
+        return null;
+
+      case "eth_accounts": {
+        if (ethereumProvider.account) return [ethereumProvider.account];
+        return [];
+      }
+
+      case "eth_requestAccounts": {
+        const acc = await HOT.request("ethereum", { ...data, account });
+        localStorage.setItem("hot-wallet-evm-account", acc[0]);
+        ethereumProvider.account = acc[0];
+        return acc;
+      }
+
+      case "eth_chainId":
+        return "0x" + ethereumProvider.chain.toString(16);
+
+      case "wallet_switchEthereumChain": {
+        ethereumProvider.chain = parseInt(data.params[0]?.chainId || data.params[0], 16);
+        localStorage.setItem("hot-wallet-evm-chainId", ethereumProvider.chain.toString());
+        return "0x" + ethereumProvider.chain.toString(16);
+      }
+
+      case "personal_sign":
+      case "eth_sendTransaction":
+      case "eth_signTransaction":
+      case "eth_signTypedData":
+      case "eth_signTypedData_v3":
+      case "eth_signTypedData_v4":
+        return HOT.request("ethereum", { ...data, account });
+
+      default:
+        throw `Method ${data.method} not supported`;
+    }
   },
 };
 
@@ -36,7 +76,7 @@ async function announceProvider() {
       detail: Object.freeze({
         provider: ethereumProvider,
         info: {
-          name: "HOT",
+          name: "HOT Wallet (Telegram)",
           icon: logo,
           rdns: "org.hot-labs",
           uuid: uuid4(),
@@ -46,9 +86,12 @@ async function announceProvider() {
   );
 }
 
-if (typeof window !== "undefined") {
+if (typeof window !== "undefined" && HOT.isInjected) {
   window?.addEventListener("eip6963:requestProvider", () => announceProvider());
   announceProvider();
 }
 
-export { ethereumProvider };
+export const enableHotProvider = () => {
+  window?.addEventListener("eip6963:requestProvider", () => announceProvider());
+  announceProvider();
+};

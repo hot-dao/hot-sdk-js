@@ -58,10 +58,6 @@ class HOT {
       return this.injectedRequest(method, request);
     }
 
-    if (method === "ethereum") {
-      throw "Ethereum provider support only injected mode now";
-    }
-
     const id = uuid4();
     const WebApp: any = (window as any)?.Telegram?.WebApp;
     const panel = WebApp == null ? window.open("about:blank", "_blank") : null;
