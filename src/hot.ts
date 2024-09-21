@@ -16,6 +16,13 @@ export class RequestFailed extends Error {
 
 class HOT {
   walletId = "https://t.me/herewalletbot/app";
+  ancestorOrigins = [
+    "http://localhost:1234",
+    "https://my.herewallet.app",
+    "https://tgapp-dev.herewallet.app",
+    "https://tgapp.herewallet.app",
+    "https://beta.herewallet.app",
+  ];
 
   connection = new Promise<InjectedState | null>((resolve) => {
     if (typeof window === "undefined") return resolve(null);
@@ -26,15 +33,7 @@ class HOT {
   });
 
   get isInjected() {
-    const domains = [
-      "http://localhost:1234",
-      "https://my.herewallet.app",
-      "https://tgapp-dev.herewallet.app",
-      "https://tgapp.herewallet.app",
-      "https://beta.herewallet.app",
-    ];
-
-    return domains.includes(window.location.ancestorOrigins?.[0]);
+    return this.ancestorOrigins.includes(window.location.ancestorOrigins?.[0]);
   }
 
   async injectedRequest<T extends keyof HotResponse>(method: T, request: HotRequest[T]): Promise<HotResponse[T]> {
@@ -47,7 +46,6 @@ class HOT {
         else return reject(e.data.payload);
       };
 
-      console.log("SEND", { $hot: true, method, request, id });
       window?.parent.postMessage({ $hot: true, method, request, id }, "*");
       window?.addEventListener("message", handler);
     });

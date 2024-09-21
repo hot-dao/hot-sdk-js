@@ -415,17 +415,15 @@
     ethereum-cryptography "^2.0.0"
     micro-ftch "^0.3.1"
 
-"@hot-wallet/sdk@^0.4.4":
-  version "0.4.4"
-  resolved "https://registry.yarnpkg.com/@hot-wallet/sdk/-/sdk-0.4.4.tgz#4df0b234ffd2baa6dedde1c1e4b95fc702136ce4"
-  integrity sha512-dQ8mFy+HkvqTnuouNmK15XtpPCmND0dlitJu/XOjBnwHFiuWPbjO2iHaPb6JgmGB3Mls1h2y2OEf/i5epQRKyg==
+"@hot-wallet/sdk@../":
+  version "0.6.1"
   dependencies:
-    "@near-js/crypto" "^1.2.4"
-    "@near-js/utils" "^0.2.2"
-    "@near-wallet-selector/core" "^8.9.12"
+    "@near-js/crypto" "^1.4.0"
+    "@near-js/utils" "^1.0.0"
+    "@near-wallet-selector/core" "^8.9.13"
     "@solana/wallet-adapter-base" "^0.9.23"
     "@solana/web3.js" "^1.95.0"
-    "@tonconnect/sdk" "^3.0.5"
+    borsh "^2.0.0"
     js-sha256 "^0.11.0"
     sha1 "^1.1.1"
     uuid4 "^2.0.3"
@@ -759,7 +757,7 @@
     lru_map "0.4.1"
     near-abi "0.1.1"
 
-"@near-js/crypto@1.2.4", "@near-js/crypto@^1.2.4":
+"@near-js/crypto@1.2.4":
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/@near-js/crypto/-/crypto-1.2.4.tgz#fad977d6a6d2c0c836ef42db8c8d355c1f433ec0"
   integrity sha512-hcSj0ygvTcXlW9ftwEd9dbvQUWBCHNWNDLou9NLfmZERW9dr0gH8kUJPZUWfpJFlUPicb+jTiMpNwDTvP7VW4A==
@@ -769,6 +767,18 @@
     "@noble/curves" "1.2.0"
     borsh "1.0.0"
     randombytes "2.1.0"
+
+"@near-js/crypto@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@near-js/crypto/-/crypto-1.4.0.tgz#52717d7aa0baf5429b0d5a1971a3c9a6e0aeedd9"
+  integrity sha512-2SYS7LyFz2/y8idqAyyS4jf3pn6zFg4tLbOq9OlB+MTZhvsnUcWW+HLznyBytp6dW8lAQ03E+Ew0bYfJSCIJJw==
+  dependencies:
+    "@near-js/types" "0.3.0"
+    "@near-js/utils" "1.0.0"
+    "@noble/curves" "1.2.0"
+    borsh "1.0.0"
+    randombytes "2.1.0"
+    secp256k1 "5.0.0"
 
 "@near-js/keystores-browser@0.0.12":
   version "0.0.12"
@@ -833,12 +843,27 @@
   resolved "https://registry.yarnpkg.com/@near-js/types/-/types-0.2.1.tgz#a298f0e70dbe059ee8c762dfac05c2eae3e0ae0e"
   integrity sha512-YygQEGMdFe6d2e/6dtNZer9paH396XeAdIKEhY/RPXDUnjDdfiDQ5DK4mM130sEeID2bAH9X1LQ+7vXGRjvyWw==
 
-"@near-js/utils@0.2.2", "@near-js/utils@^0.2.2":
+"@near-js/types@0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@near-js/types/-/types-0.3.0.tgz#aa5fa1097c338166c5401bfb16de26385c3ddc74"
+  integrity sha512-IwayA5Wa4+hryo22AuAYIu5a/nOAheF/Bmz9kpuouX9L4he+Tc8xAt5NfE60zXG7tsukAw1QAaHE1kBzhmwtKw==
+
+"@near-js/utils@0.2.2":
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/@near-js/utils/-/utils-0.2.2.tgz#a42c29db9ccd5a02ad583319028fdb7231821ab2"
   integrity sha512-ZAJo/cN6AHY7/gckf8DLHwjAn0z4UwG6rhLxs+QDyNYMMSx9SBg2pOQtBBv7ORWJaPhWD2q7wFhUz4SdTZi43A==
   dependencies:
     "@near-js/types" "0.2.1"
+    bs58 "4.0.0"
+    depd "2.0.0"
+    mustache "4.0.0"
+
+"@near-js/utils@1.0.0", "@near-js/utils@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@near-js/utils/-/utils-1.0.0.tgz#10d94a2b4c307ee7e44775a723a0005eb293735a"
+  integrity sha512-4dd6fDgWZnG+0VSKPBA3czEQdi9UotepdwcEKLTbXepIL1FX2ZlQV6HVi7KYmrAVwv1ims11vGnWzJWKy46ULw==
+  dependencies:
+    "@near-js/types" "0.3.0"
     bs58 "4.0.0"
     depd "2.0.0"
     mustache "4.0.0"
@@ -868,6 +893,16 @@
     events "3.3.0"
     js-sha256 "0.9.0"
     near-api-js "4.0.3"
+    rxjs "7.8.1"
+
+"@near-wallet-selector/core@^8.9.13":
+  version "8.9.13"
+  resolved "https://registry.yarnpkg.com/@near-wallet-selector/core/-/core-8.9.13.tgz#d7190d7914e6c2cceac5af107d1f7366266f923a"
+  integrity sha512-ufI2yctF2N7+D6s5QaSs9Bqorh8xPH48wuBEvTbArJ6z9qvSCNsK9ZO5Mt5BFfO64ovmcflOOUBtZ4/BcNO6aQ==
+  dependencies:
+    borsh "0.7.0"
+    events "3.3.0"
+    js-sha256 "0.9.0"
     rxjs "7.8.1"
 
 "@near-wallet-selector/modal-ui-js@^8.9.12":
@@ -2359,6 +2394,11 @@ borsh@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/borsh/-/borsh-1.0.0.tgz#b564c8cc8f7a91e3772b9aef9e07f62b84213c1f"
   integrity sha512-fSVWzzemnyfF89EPwlUNsrS5swF5CrtiN4e+h0/lLf4dz2he4L3ndM20PS9wj7ICSkXJe/TQUHdaPTq15b1mNQ==
+
+borsh@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/borsh/-/borsh-2.0.0.tgz#042a9f109565caac3c6a21297cd8c0ae8db3149d"
+  integrity sha512-kc9+BgR3zz9+cjbwM8ODoUB4fs3X3I5A/HtX7LZKxCLaMrEeDFoBpnhZY//DTS1VZBSs6S5v46RZRbZjRFspEg==
 
 bowser@^2.9.0:
   version "2.11.0"
@@ -5421,7 +5461,7 @@ scheduler@^0.23.2:
   dependencies:
     loose-envify "^1.1.0"
 
-secp256k1@^5.0.0:
+secp256k1@5.0.0, secp256k1@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/secp256k1/-/secp256k1-5.0.0.tgz#be6f0c8c7722e2481e9773336d351de8cddd12f7"
   integrity sha512-TKWX8xvoGHrxVdqbYeZM9w+izTF4b9z3NhSaDkdn81btvuh+ivbIMGT/zQvDtTFWhRlThpoz6LEYTr7n8A5GcA==

@@ -21,6 +21,7 @@ export const hotProvider = {
 
   _events: new Map<string, Set<any>>(),
   isHotWallet: true,
+  isMetaMask: true,
 
   isConnected: () => HOT.isInjected || hotProvider.address != null,
   publicProvider: async (data: any, chain: number, address?: string | null): Promise<any> => {
@@ -63,6 +64,7 @@ export const hotProvider = {
 
   request: async (data: any): Promise<any> => {
     if (HOT.isInjected) return HOT.request("ethereum", data);
+    console.log(data);
 
     switch (data.method) {
       case "wallet_revokePermissions":
@@ -70,7 +72,7 @@ export const hotProvider = {
         return null;
 
       case "wallet_requestPermissions":
-        return null;
+        throw "Unsupported method wallet_requestPermissions";
 
       case "eth_accounts":
         return hotProvider.address ? [hotProvider.address] : [];
@@ -103,7 +105,7 @@ export const hotProvider = {
   },
 };
 
-if (HOT.isInjected) {
+if (HOT.isInjected || !window?.ethereum) {
   window.ethereum = undefined;
   window.ethereum = hotProvider;
 }
@@ -126,7 +128,7 @@ async function announceProvider() {
           name: "HOT Wallet (Telegram)",
           icon: logo,
           rdns: "org.hot-labs",
-          uuid: uuid4(),
+          uuid: "cc8e962c-1f42-425c-8845-e8bd2e136fff",
         },
       }),
     })
