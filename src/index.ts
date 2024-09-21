@@ -1,10 +1,10 @@
-import { ethereumProvider } from "./adapter/evm";
+import { hotProvider, enableHotProvider } from "./adapter/evm";
 import { HotWalletAdapter as SolanaHotWalletAdapter } from "./adapter/solana";
 import { setupHotWallet } from "./adapter/near";
 import "./adapter/ton";
 
 export { AuthPayload, authPayloadSchema, verifySignature } from "./helpers/nep0314";
-export { SolanaHotWalletAdapter, ethereumProvider };
+export { SolanaHotWalletAdapter, hotProvider, enableHotProvider };
 export { setupHotWallet };
 
 export type { HotRequest, HotResponse, InjectedState } from "./helpers/types";

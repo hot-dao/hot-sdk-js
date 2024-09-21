@@ -7,39 +7,86 @@ declare global {
   }
 }
 
-export const ethereumProvider = {
-  on() {},
+export const hotProvider = {
+  on(event: string, cb: any) {
+    const set = this._events.get(event);
+    if (!set) this._events.set(event, new Set([cb]));
+    else set.add(cb);
+  },
+
+  removeListener(event: string, cb: any) {
+    const set = this._events.get(event);
+    set?.delete(cb);
+  },
+
+  _events: new Map<string, Set<any>>(),
   isHotWallet: true,
-  account: localStorage.getItem("hot-wallet-evm-account"),
-  chain: +(localStorage.getItem("hot-wallet-evm-chainId") || 1),
-  isConnected: () => HOT.isInjected || ethereumProvider.account != null,
+
+  isConnected: () => HOT.isInjected || hotProvider.address != null,
+  publicProvider: async (data: any, chain: number, address?: string | null): Promise<any> => {
+    throw `Method not implemented ${data} for chain ${chain}`;
+  },
+
+  get account() {
+    return { address: this.address, chain: this.chainId };
+  },
+
+  get address(): string | null {
+    return localStorage.getItem("hot-wallet-evm-account") || null;
+  },
+
+  set address(address: string | null) {
+    if (address == null) {
+      localStorage.removeItem("hot-wallet-evm-account");
+      hotProvider._events.get("accountsChanged")?.forEach((cb) => cb([]));
+      hotProvider._events.get("disconnect")?.forEach((cb) => cb());
+      return;
+    }
+
+    if (this.address == null) {
+      hotProvider._events.get("connect")?.forEach((cb) => cb({ chainId: `0x${this.chainId.toString(16)}` }));
+    }
+
+    localStorage.setItem("hot-wallet-evm-account", address);
+    hotProvider._events.get("accountsChanged")?.forEach((cb) => cb([address]));
+  },
+
+  set chainId(chain: number | string) {
+    const chainId = typeof chain === "string" ? parseInt(chain, 16) : chain;
+    localStorage.setItem("hot-wallet-evm-chainId", chainId.toString());
+    hotProvider._events.get("chainChanged")?.forEach((cb) => cb(`0x${chainId.toString(16)}`));
+  },
+
+  get chainId(): number {
+    return parseInt(localStorage.getItem("hot-wallet-evm-chainId") || "1");
+  },
+
   request: async (data: any): Promise<any> => {
     if (HOT.isInjected) return HOT.request("ethereum", data);
 
-    const account = { chain: ethereumProvider.chain, address: ethereumProvider.account };
     switch (data.method) {
+      case "wallet_revokePermissions":
+        hotProvider.address = null;
+        return null;
+
       case "wallet_requestPermissions":
         return null;
 
-      case "eth_accounts": {
-        if (ethereumProvider.account) return [ethereumProvider.account];
-        return [];
-      }
+      case "eth_accounts":
+        return hotProvider.address ? [hotProvider.address] : [];
 
       case "eth_requestAccounts": {
-        const acc = await HOT.request("ethereum", { ...data, account });
-        localStorage.setItem("hot-wallet-evm-account", acc[0]);
-        ethereumProvider.account = acc[0];
+        const acc = await HOT.request("ethereum", { ...data, account: hotProvider.account });
+        hotProvider.address = acc[0];
         return acc;
       }
 
       case "eth_chainId":
-        return "0x" + ethereumProvider.chain.toString(16);
+        return "0x" + hotProvider.chainId.toString(16);
 
       case "wallet_switchEthereumChain": {
-        ethereumProvider.chain = parseInt(data.params[0]?.chainId || data.params[0], 16);
-        localStorage.setItem("hot-wallet-evm-chainId", ethereumProvider.chain.toString());
-        return "0x" + ethereumProvider.chain.toString(16);
+        hotProvider.chainId = parseInt(data.params[0]?.chainId || data.params[0], 16);
+        return null;
       }
 
       case "personal_sign":
@@ -48,17 +95,17 @@ export const ethereumProvider = {
       case "eth_signTypedData":
       case "eth_signTypedData_v3":
       case "eth_signTypedData_v4":
-        return HOT.request("ethereum", { ...data, account });
+        return HOT.request("ethereum", { ...data, account: hotProvider.account });
 
       default:
-        throw `Method ${data.method} not supported`;
+        return hotProvider.publicProvider(data, hotProvider.chainId, hotProvider.address);
     }
   },
 };
 
 if (HOT.isInjected) {
   window.ethereum = undefined;
-  window.ethereum = ethereumProvider;
+  window.ethereum = hotProvider;
 }
 
 const logo =
@@ -68,13 +115,13 @@ async function announceProvider() {
   if (typeof window === "undefined") return;
   if (HOT.isInjected) {
     window.ethereum = undefined;
-    window.ethereum = ethereumProvider;
+    window.ethereum = hotProvider;
   }
 
   window?.dispatchEvent(
     new CustomEvent("eip6963:announceProvider", {
       detail: Object.freeze({
-        provider: ethereumProvider,
+        provider: hotProvider,
         info: {
           name: "HOT Wallet (Telegram)",
           icon: logo,
@@ -91,7 +138,8 @@ if (typeof window !== "undefined" && HOT.isInjected) {
   announceProvider();
 }
 
-export const enableHotProvider = () => {
+export const enableHotProvider = (provider?: (data: any, chain: number, address?: string | null) => Promise<any>) => {
+  if (provider) hotProvider.publicProvider = provider;
   window?.addEventListener("eip6963:requestProvider", () => announceProvider());
   announceProvider();
 };

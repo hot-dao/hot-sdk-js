@@ -42,13 +42,26 @@ import "@hot-wallet/sdk/adapter/ton";
 // After this you can use @tonconnect/sdk as you want
 ```
 
-### EVM Connect (Injected only)
+### EVM Connect
+
+If the application is opened inside HOT, then your wallet-selector (web3modal or rainbowkit) will automatically see the HOT wallet:
 
 ```ts
-import { ethereumProvider } from "@hot-wallet/sdk/adapter/evm";
-// After this you can use window.ethereum as you want
-// Or use web3 or etherjs with ethereumProvider like eip6963 standart
+import "@hot-wallet/sdk";
 ```
+
+If you integrate HOT on a website or a separate Telegram miniapp, you need to call the method:
+
+```ts
+import { enableHotProvider } from "@hot-wallet/sdk";
+enableHotProvider((request, chain, address) => {
+  // use rpc for connected chain and address
+  return yourPublicRpcProvider[chain]?.request(request);
+});
+```
+
+`hotProvider` implements methods that require a private key signature. All other methods that need to be sent to the network you must implement yourself.
+You can use your own rpc for this in conjunction with etherjs or web3 library.
 
 ## Debug Injected App
 
