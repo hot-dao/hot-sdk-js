@@ -53,8 +53,8 @@ import "@hot-wallet/sdk";
 If you integrate HOT on a website or a separate Telegram miniapp, you need to call the method:
 
 ```ts
-import { enableHotProvider } from "@hot-wallet/sdk";
-enableHotProvider((request, chain, address) => {
+import { HOT } from "@hot-wallet/sdk";
+HOT.setupEthProvider((request, chain, address) => {
   // use rpc for connected chain and address
   return yourPublicRpcProvider[chain]?.request(request);
 });

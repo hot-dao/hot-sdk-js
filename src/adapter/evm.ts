@@ -1,4 +1,3 @@
-import uuid4 from "uuid4";
 import HOT from "../hot";
 
 declare global {
@@ -24,9 +23,6 @@ export const hotProvider = {
   isMetaMask: true,
 
   isConnected: () => HOT.isInjected || hotProvider.address != null,
-  publicProvider: async (data: any, chain: number, address?: string | null): Promise<any> => {
-    throw `Method not implemented ${data} for chain ${chain}`;
-  },
 
   get account() {
     return { address: this.address, chain: this.chainId };
@@ -64,7 +60,6 @@ export const hotProvider = {
 
   request: async (data: any): Promise<any> => {
     if (HOT.isInjected) return HOT.request("ethereum", data);
-    console.log(data);
 
     switch (data.method) {
       case "wallet_revokePermissions":
@@ -72,7 +67,7 @@ export const hotProvider = {
         return null;
 
       case "wallet_requestPermissions":
-        throw "Unsupported method wallet_requestPermissions";
+        throw "Unsupported method: wallet_requestPermissions";
 
       case "eth_accounts":
         return hotProvider.address ? [hotProvider.address] : [];
@@ -100,7 +95,8 @@ export const hotProvider = {
         return HOT.request("ethereum", { ...data, account: hotProvider.account });
 
       default:
-        return hotProvider.publicProvider(data, hotProvider.chainId, hotProvider.address);
+        if (!HOT.customProvider) throw `Method not implemented ${data} for chain ${hotProvider.chainId}`;
+        return HOT.customProvider?.(data, hotProvider.chainId, hotProvider.address);
     }
   },
 };
@@ -135,13 +131,7 @@ async function announceProvider() {
   );
 }
 
-if (typeof window !== "undefined" && HOT.isInjected) {
+if (typeof window !== "undefined") {
   window?.addEventListener("eip6963:requestProvider", () => announceProvider());
   announceProvider();
 }
-
-export const enableHotProvider = (provider?: (data: any, chain: number, address?: string | null) => Promise<any>) => {
-  if (provider) hotProvider.publicProvider = provider;
-  window?.addEventListener("eip6963:requestProvider", () => announceProvider());
-  announceProvider();
-};

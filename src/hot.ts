@@ -24,7 +24,7 @@ class HOT {
     "https://beta.herewallet.app",
   ];
 
-  connection = new Promise<InjectedState | null>((resolve) => {
+  readonly connection = new Promise<InjectedState | null>((resolve) => {
     if (typeof window === "undefined") return resolve(null);
     if (window?.self === window?.top) return resolve(null);
     this.injectedRequest("initialized", {})
@@ -34,6 +34,16 @@ class HOT {
 
   get isInjected() {
     return this.ancestorOrigins.includes(window.location.ancestorOrigins?.[0]);
+  }
+
+  openInHotBrowser = false;
+  toggleOpenInHotBrowser(is: boolean) {
+    this.openInHotBrowser = is;
+  }
+
+  customProvider?: (data: any, chain: number, address?: string | null) => Promise<any>;
+  setupEthProvider(provider?: (data: any, chain: number, address?: string | null) => Promise<any>) {
+    this.customProvider = provider;
   }
 
   async injectedRequest<T extends keyof HotResponse>(method: T, request: HotRequest[T]): Promise<HotResponse[T]> {
@@ -60,9 +70,16 @@ class HOT {
     const WebApp: any = (window as any)?.Telegram?.WebApp;
     const panel = WebApp == null ? window.open("about:blank", "_blank") : null;
 
-    const requestId = await createRequest({ $hot: true, method, request, id });
-    const link = `${this.walletId}?startapp=hotconnect-${baseEncode(requestId)}`;
+    const requestId = await createRequest({
+      inside: this.openInHotBrowser || (method === "ethereum" && this.customProvider == null),
+      origin: location.href,
+      $hot: true,
+      method,
+      request,
+      id,
+    });
 
+    const link = `${this.walletId}?startapp=hotconnect-${baseEncode(requestId)}`;
     if (panel) panel.location.assign(link);
     else WebApp?.openTelegramLink(link);
 
