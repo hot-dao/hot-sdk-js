@@ -19,8 +19,8 @@ export const hotProvider = {
   },
 
   _events: new Map<string, Set<any>>(),
+  isMetaMask: HOT.isInjected,
   isHotWallet: true,
-  isMetaMask: true,
 
   isConnected: () => HOT.isInjected || hotProvider.address != null,
 
