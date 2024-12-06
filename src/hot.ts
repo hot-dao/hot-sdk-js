@@ -36,9 +36,9 @@ class HOT {
     return this.ancestorOrigins.includes(window.location.ancestorOrigins?.[0]);
   }
 
-  openInHotBrowser = false;
-  toggleOpenInHotBrowser(is: boolean) {
-    this.openInHotBrowser = is;
+  openInHotBrowserUrl: string | null = null;
+  toggleOpenInHotBrowser(url: string | null) {
+    this.openInHotBrowserUrl = url;
   }
 
   customProvider?: (data: any, chain: number, address?: string | null) => Promise<any>;
@@ -71,8 +71,8 @@ class HOT {
     const panel = WebApp == null ? window.open("about:blank", "_blank") : null;
 
     const requestId = await createRequest({
-      inside: this.openInHotBrowser || (method === "ethereum" && this.customProvider == null),
-      origin: location.href,
+      inside: !!this.openInHotBrowserUrl || (method === "ethereum" && this.customProvider == null),
+      origin: typeof this.openInHotBrowserUrl === "string" ? this.openInHotBrowserUrl : location.href,
       $hot: true,
       method,
       request,
