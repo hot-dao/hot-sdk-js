@@ -33,7 +33,7 @@ class HOT {
   });
 
   get isInjected() {
-    return this.ancestorOrigins.includes(window.location.ancestorOrigins?.[0]);
+    return this.ancestorOrigins.includes(window?.location?.ancestorOrigins?.[0]);
   }
 
   openInHotBrowserUrl: string | null = null;
