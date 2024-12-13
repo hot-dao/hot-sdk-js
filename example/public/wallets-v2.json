@@ -5,6 +5,7 @@
     "image": "https://storage.herewallet.app/logo.png",
     "about_url": "https://hot-labs.org/",
     "universal_url": "https://t.me/herewalletbot?attach=wallet",
+
     "bridge": [
       {
         "type": "sse",
@@ -15,6 +16,6 @@
         "key": "hot"
       }
     ],
-    "platforms": ["ios", "android", "macos", "windows", "linux"]
+    "platforms": ["ios", "android", "chrome", "firefox", "macos", "windows", "linux"]
   }
 ]
