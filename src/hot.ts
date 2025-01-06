@@ -14,6 +14,31 @@ export class RequestFailed extends Error {
   }
 }
 
+let connector: HTMLIFrameElement | undefined;
+window.addEventListener("message", (e: any) => {
+  if (e.data === "hot-close") {
+    connector?.remove();
+    connector = undefined;
+  }
+});
+
+const createIframe = (widget: string) => {
+  connector?.remove();
+  connector = document.createElement("iframe");
+  connector.src = widget;
+  connector.allow = "usb";
+  connector.style.border = "none";
+  connector.style.zIndex = "10000";
+  connector.style.position = "fixed";
+  connector.style.display = "block";
+  connector.style.top = "0";
+  connector.style.left = "0";
+  connector.style.width = "100%";
+  connector.style.height = "100%";
+  document.body.appendChild(connector);
+  return connector;
+};
+
 class HOT {
   walletId = "https://t.me/herewalletbot/app";
   ancestorOrigins = [
@@ -69,7 +94,6 @@ class HOT {
 
     const id = uuid4();
     const WebApp: any = (window as any)?.Telegram?.WebApp;
-    const panel = WebApp == null ? window.open("about:blank", "_blank") : null;
 
     const requestId = await createRequest({
       inside: !!this.openInHotBrowserUrl || (method === "ethereum" && this.customProvider == null),
@@ -81,8 +105,11 @@ class HOT {
     });
 
     const link = `${this.walletId}?startapp=hotconnect-${baseEncode(requestId)}`;
-    if (panel) panel.location.assign(link);
-    else WebApp?.openTelegramLink(link);
+    if (WebApp) WebApp?.openTelegramLink(link);
+    else {
+      const origin = `https://hot-labs.org/hot-widget/index.html`;
+      createIframe(`${origin}?hotconnect-${baseEncode(requestId)}`);
+    }
 
     const poolResponse = async () => {
       await wait(3000);
@@ -93,7 +120,7 @@ class HOT {
     };
 
     const result = await poolResponse();
-    panel?.close();
+    connector?.remove();
     return result;
   }
 }

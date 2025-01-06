@@ -66,7 +66,7 @@ export class HotWalletAdapter extends BaseMessageSignerWalletAdapter {
     try {
       return Transaction.from(buf);
     } catch {
-      return VersionedTransaction.deserialize(buf);
+      return VersionedTransaction.deserialize(new Uint8Array(buf));
     }
   }
 
@@ -130,7 +130,9 @@ export class HotWalletAdapter extends BaseMessageSignerWalletAdapter {
 
         sendOptions.preflightCommitment = sendOptions.preflightCommitment || connection.commitment;
         const { signature } = await HOT.request("solana:signAndSendTransaction", {
-          transaction: Buffer.from(transaction.serialize({ requireAllSignatures: false })).toString("base64"),
+          transaction: Buffer.from(transaction.serialize({ requireAllSignatures: false }) as Uint8Array).toString(
+            "base64"
+          ),
           sendOptions,
         });
 
@@ -150,7 +152,7 @@ export class HotWalletAdapter extends BaseMessageSignerWalletAdapter {
       if (!this._publicKey) throw new WalletNotConnectedError();
 
       try {
-        const tx = Buffer.from(transaction.serialize({ requireAllSignatures: false })).toString("base64");
+        const tx = Buffer.from(transaction.serialize({ requireAllSignatures: false }) as Uint8Array).toString("base64");
         const result = await HOT.request("solana:signTransactions", { transactions: [tx] });
         return this._parseTransaction(result.transactions[0]) as any;
       } catch (error: any) {
@@ -168,7 +170,7 @@ export class HotWalletAdapter extends BaseMessageSignerWalletAdapter {
 
       try {
         const tx = transactions.map((t) =>
-          Buffer.from(t.serialize({ requireAllSignatures: false })).toString("base64")
+          Buffer.from(t.serialize({ requireAllSignatures: false }) as Uint8Array).toString("base64")
         );
 
         const response = await HOT.request("solana:signTransactions", { transactions: tx });
@@ -190,7 +192,7 @@ export class HotWalletAdapter extends BaseMessageSignerWalletAdapter {
           message: Buffer.from(message).toString("base64"),
         });
 
-        return Buffer.from(signature, "base64");
+        return new Uint8Array(Buffer.from(signature, "base64"));
       } catch (error: any) {
         throw new WalletSignMessageError(error?.message, error);
       }

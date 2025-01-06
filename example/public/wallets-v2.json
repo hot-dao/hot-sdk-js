@@ -13,7 +13,7 @@
       },
       {
         "type": "js",
-        "key": "hot"
+        "key": "hotWallet"
       }
     ],
     "platforms": ["ios", "android", "chrome", "firefox", "macos", "windows", "linux"]
