@@ -10,7 +10,7 @@ import { HotWalletAdapter } from "@hot-wallet/sdk/adapter/solana";
 
 export const ExampleSolana: FC = () => {
   const wallets = useMemo(() => [new HotWalletAdapter()], []);
-  const solanaRPC = "https://api.mainnet-beta.solana.com";
+  const solanaRPC = "https://staked.helius-rpc.com/?api-key=0b9f580f-8102-4b89-928b-8770a62771f0";
 
   return (
     <ConnectionProvider endpoint={solanaRPC}>

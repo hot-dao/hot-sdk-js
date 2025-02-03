@@ -2,7 +2,7 @@ import HOT from "../hot";
 
 if (HOT.isInjected) {
   // @ts-ignore
-  window.hot = {
+  window.hotWallet = {
     tonconnect: {
       deviceInfo: {
         appName: "hot",

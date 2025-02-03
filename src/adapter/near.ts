@@ -1,22 +1,8 @@
 import type { WalletModuleFactory, InjectedWallet } from "@near-wallet-selector/core";
 import { HOT, verifySignature } from "..";
 
-declare global {
-  interface Window {
-    hotNear: any;
-  }
-}
-
 export function setupHotWallet(): WalletModuleFactory<InjectedWallet> {
   return async () => {
-    const connection = await HOT.connection;
-
-    const injectedAccounts = (() => {
-      if (!connection?.near) return null;
-      const { address, publicKey } = connection.near;
-      return [{ accountId: address, publicKey }];
-    })();
-
     return {
       id: "hot-wallet",
       type: "injected",
@@ -25,24 +11,21 @@ export function setupHotWallet(): WalletModuleFactory<InjectedWallet> {
         description: "Multichain wallet under HOT Protocol",
         downloadUrl: "https://www.hotdao.ai/wallet",
         iconUrl: "https://storage.herewallet.app/logo.png",
-        topLevelInjected: connection != null,
+        topLevelInjected: HOT.isInjected,
         useUrlAccountImport: false,
         deprecated: false,
         available: true,
       },
 
       init: async (config) => {
-        if (window.hotNear) {
-          window.hotNear.on("accountsChanged", (e: any) => config.emitter.emit("accountsChanged", e));
-          window.hotNear.on("signedOut", (e: any) => config.emitter.emit("signedOut", e));
-          window.hotNear.on("signedIn", (e: any) => config.emitter.emit("signedIn", e));
-        }
+        HOT.subscribe("near:accountsChanged", (e: any) => config.emitter.emit("accountsChanged", e));
+        HOT.subscribe("near:signedOut", (e: any) => config.emitter.emit("signedOut", e));
+        HOT.subscribe("near:signedIn", (e: any) => config.emitter.emit("signedIn", e));
 
         return {
           async getAccounts() {
-            if (window.hotNear) return window.hotNear.getAccounts();
-            if (injectedAccounts) return injectedAccounts;
             try {
+              if (HOT.isInjected) return [await HOT.request("near:signIn", {})];
               return JSON.parse(localStorage.getItem("hot:near-account") || "");
             } catch {
               return [];
@@ -50,40 +33,7 @@ export function setupHotWallet(): WalletModuleFactory<InjectedWallet> {
           },
 
           async signIn(data) {
-            if (injectedAccounts) {
-              config.emitter.emit("signedIn", {
-                contractId: data.contractId,
-                methodNames: data.methodNames ?? [],
-                accounts: injectedAccounts,
-              });
-
-              return injectedAccounts;
-            }
-
-            const nonce = new Uint8Array(32);
-            const request: any = {
-              recipient: window.location.hostname,
-              nonce: window.crypto.getRandomValues(nonce),
-              message: "Auth",
-            };
-
-            if (window.hotNear) {
-              const result = await window.hotNear.signIn(request);
-              if (!verifySignature(request, result)) throw "Signature invalid";
-
-              const accounts = [{ accountId: result.accountId, publicKey: result.publicKey }];
-              config.emitter.emit("signedIn", {
-                contractId: data.contractId,
-                methodNames: data.methodNames ?? [],
-                accounts,
-              });
-
-              return accounts;
-            }
-
-            const result = await HOT.request("near:signMessage", request);
-            if (!verifySignature(request, result)) throw "Signature invalid";
-
+            const result = await HOT.request("near:signIn", {});
             const accounts = [{ accountId: result.accountId, publicKey: result.publicKey }];
             localStorage.setItem("hot:near-account", JSON.stringify(accounts));
 
@@ -97,12 +47,7 @@ export function setupHotWallet(): WalletModuleFactory<InjectedWallet> {
           },
 
           async signOut() {
-            if (window.hotNear) {
-              await window.hotNear.signOut();
-              config.emitter.emit("signedOut", null);
-              return;
-            }
-
+            if (HOT.isInjected) HOT.request("near:signOut", {});
             config.emitter.emit("signedOut", null);
             localStorage.setItem("hot:near-account", "[]");
           },
@@ -114,27 +59,20 @@ export function setupHotWallet(): WalletModuleFactory<InjectedWallet> {
               recipient: params.recipient,
             };
 
-            const result = window.hotNear
-              ? await window.hotNear.signMessage(params)
-              : await HOT.request("near:signMessage", request);
-
+            const result = await HOT.request("near:signMessage", request);
             if (!verifySignature(request, result)) throw "Signature invalid";
             return result;
           },
 
           async signAndSendTransaction(params) {
-            const { transaction } = window.hotNear
-              ? await window.hotNear.signAndSendTransaction(params)
-              : HOT.request("near:signAndSendTransaction", params);
+            const { transaction } = await HOT.request("near:signAndSendTransaction", params);
             return transaction as any;
           },
 
           async signAndSendTransactions(params) {
             const results: string[] = [];
             for (const tx of params.transactions) {
-              const { transaction } = window.hotNear
-                ? await window.hotNear.signAndSendTransaction(tx)
-                : HOT.request("near:signAndSendTransaction", tx);
+              const { transaction } = await HOT.request("near:signAndSendTransaction", tx);
               results.push(transaction);
             }
 

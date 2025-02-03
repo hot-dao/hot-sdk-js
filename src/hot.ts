@@ -3,6 +3,17 @@ import { baseEncode } from "@near-js/utils";
 import { InjectedState, HotRequest, HotResponse } from "./helpers/types";
 import { createRequest, getResponse } from "./helpers/proxy";
 
+declare global {
+  interface Window {
+    hotExtension?: {
+      autoRun: boolean;
+      request: (method: string, args: any) => any;
+      subscribe: (event: string, args: any) => () => void;
+      evm: any;
+    };
+  }
+}
+
 export const wait = (timeout: number) => {
   return new Promise<void>((resolve) => setTimeout(resolve, timeout));
 };
@@ -14,7 +25,7 @@ export class RequestFailed extends Error {
   }
 }
 
-let connector: HTMLIFrameElement | undefined;
+let connector: HTMLDivElement | undefined;
 window.addEventListener("message", (e: any) => {
   if (e.data === "hot-close") {
     connector?.remove();
@@ -24,17 +35,35 @@ window.addEventListener("message", (e: any) => {
 
 const createIframe = (widget: string) => {
   connector?.remove();
-  connector = document.createElement("iframe");
-  connector.src = widget;
-  connector.allow = "usb";
-  connector.style.border = "none";
+  connector = document.createElement("div");
+
+  const iframe = document.createElement("iframe");
+  connector?.appendChild(iframe);
+
+  iframe.src = widget;
+  iframe.allow = "usb";
+  iframe.style.border = "none";
+  iframe.style.borderRadius = "16px";
+  iframe.style.background = "#fff";
+  iframe.style.overflow = "hidden";
+  iframe.style.background = "#1D1F20";
+  iframe.style.border = "1px solid #2C3034";
+  iframe.style.width = "375px";
+  iframe.style.height = "560px";
+
+  connector.style.padding = "16px";
   connector.style.zIndex = "10000";
   connector.style.position = "fixed";
-  connector.style.display = "block";
+  connector.style.display = "flex";
+  connector.style.justifyContent = "center";
+  connector.style.alignItems = "center";
   connector.style.top = "0";
   connector.style.left = "0";
   connector.style.width = "100%";
   connector.style.height = "100%";
+  connector.style.background = "rgba(0, 0, 0, 0.1)";
+  connector.style.backdropFilter = "blur(24px)";
+
   document.body.appendChild(connector);
   return connector;
 };
@@ -59,6 +88,7 @@ class HOT {
 
   get isInjected() {
     if (typeof window === "undefined") return false;
+    if (window.hotExtension != null) return window.hotExtension.autoRun;
     return this.ancestorOrigins.includes(window.location.ancestorOrigins?.[0]);
   }
 
@@ -87,10 +117,14 @@ class HOT {
     });
   }
 
+  subscribe(event: string, cb: (e: any) => void) {
+    if (!window.hotExtension) return () => {};
+    return window.hotExtension.subscribe(event, cb);
+  }
+
   async request<T extends keyof HotResponse>(method: T, request: HotRequest[T]): Promise<HotResponse[T]> {
-    if (this.isInjected) {
-      return this.injectedRequest(method, request);
-    }
+    if (window.hotExtension != null) return window.hotExtension.request(method, request);
+    if (this.isInjected) return this.injectedRequest(method, request);
 
     const id = uuid4();
     const WebApp: any = (window as any)?.Telegram?.WebApp;

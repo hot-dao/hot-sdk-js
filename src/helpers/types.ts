@@ -28,6 +28,8 @@ export interface HotRequest {
 
   "near:signMessage": SignMessageOptionsNEP0413;
   "near:signAndSendTransaction": Parameters<InjectedWallet["signAndSendTransaction"]>[0];
+  "near:signIn": {};
+  "near:signOut": {};
 
   ethereum: {
     account?: { chain: number; address: string | null };
@@ -49,6 +51,8 @@ export interface HotResponse {
 
   "near:signMessage": SignedMessageNEP0413;
   "near:signAndSendTransaction": { transaction: string };
+  "near:signIn": { accountId: string; publicKey: string };
+  "near:signOut": {};
 
   initialized: InjectedState;
   ethereum: any;

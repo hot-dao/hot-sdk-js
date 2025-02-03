@@ -2,6 +2,9 @@
 
 ## Connector for Injected Apps
 
+- Support HOT Extension
+- Support Telegram/Mobile App via Iframe Widget
+
 - Solana Connect
 - TON Connect
 - EVM Connect
@@ -17,10 +20,10 @@ import { HotWalletAdapter } from "@hot-wallet/sdk/adapter/solana";
 const adapter = new HotWalletAdapter();
 
 // Or low level api
-const result = await HOT.request("solana:connect", {});
-const result = await HOT.request("solana:signMessage", { ... });
-const result = await HOT.request("solana:signTransactions", { ... });
-const result = await HOT.request("solana:signAndSendTransaction", { ... });
+await HOT.request("solana:connect", {});
+await HOT.request("solana:signMessage", { ... });
+await HOT.request("solana:signTransactions", { ... });
+await HOT.request("solana:signAndSendTransaction", { ... });
 ```
 
 ### NEAR Connect
@@ -31,8 +34,9 @@ import { setupHotWallet } from "@hot-wallet/adapter/near";
 
 // Or use low level api
 import { HOT } from "@hot-wallet/sdk";
-const result = await HOT.request("near:signMessage", { ... });
-const result = await HOT.request("near:signAndSendTransaction", { ... });
+await HOT.request("near:signIn", {});
+await HOT.request("near:signMessage", { ... });
+await HOT.request("near:signAndSendTransaction", { ... });
 ```
 
 ### TON Connect
@@ -40,6 +44,11 @@ const result = await HOT.request("near:signAndSendTransaction", { ... });
 ```ts
 import "@hot-wallet/sdk/adapter/ton";
 // After this you can use @tonconnect/sdk as you want
+
+// Or use low lvel api
+import { HOT } from "@hot-wallet/sdk";
+await HOT.request("ton:connect", {});
+await HOT.request("ton:send", { ... });
 ```
 
 ### EVM Connect
@@ -62,6 +71,12 @@ HOT.setupEthProvider((request, chain, address) => {
 
 `hotProvider` implements methods that require a private key signature. All other methods that need to be sent to the network you must implement yourself.
 You can use your own rpc for this in conjunction with etherjs or web3 library.
+
+```ts
+// Or use low lvel api
+import { HOT } from "@hot-wallet/sdk";
+await HOT.request("ethereum", { ... });
+```
 
 ## Debug Injected App
 

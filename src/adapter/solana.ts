@@ -37,7 +37,7 @@ export class HotWalletAdapter extends BaseMessageSignerWalletAdapter {
 
   private _connecting = false;
   private _publicKey: PublicKey | null = null;
-  private _readyState = WalletReadyState.Installed;
+  private _readyState = window.hotExtension ? WalletReadyState.Unsupported : WalletReadyState.Installed;
 
   get publicKey() {
     return this._publicKey;
