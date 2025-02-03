@@ -1,6 +1,6 @@
 import uuid4 from "uuid4";
 import { baseEncode } from "@near-js/utils";
-import { InjectedState, HotRequest, HotResponse } from "./helpers/types";
+import type { InjectedState, HotRequest, HotResponse } from "./helpers/types";
 import { createRequest, getResponse } from "./helpers/proxy";
 
 declare global {
@@ -26,12 +26,14 @@ export class RequestFailed extends Error {
 }
 
 let connector: HTMLDivElement | undefined;
-window.addEventListener("message", (e: any) => {
-  if (e.data === "hot-close") {
-    connector?.remove();
-    connector = undefined;
-  }
-});
+if (typeof window !== "undefined") {
+  window.addEventListener("message", (e: any) => {
+    if (e.data === "hot-close") {
+      connector?.remove();
+      connector = undefined;
+    }
+  });
+}
 
 const createIframe = (widget: string) => {
   connector?.remove();

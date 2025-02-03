@@ -1,15 +1,17 @@
 {
   "name": "@hot-wallet/sdk",
-  "version": "1.0.0",
-  "type": "module",
+  "version": "1.0.5",
+  "type": "commonjs",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
-    "./adapter": "./build/adapter/index.js",
     "./adapter/ton": "./build/adapter/ton.js",
     "./adapter/solana": "./build/adapter/solana.js",
     "./adapter/near": "./build/adapter/near.js",
     "./adapter/evm": "./build/adapter/evm.js",
+    "./nep0314": "./build/helpers/nep0314.js",
+    "./logo": "./build/logo.js",
+    "./hot": "./build/hot.js",
     ".": "./build/index.js"
   },
   "directories": {
