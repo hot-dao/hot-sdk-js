@@ -6,7 +6,8 @@ import { FC, useEffect, useState } from "react";
 
 // Wallet-selector adapter
 import { setupHotWallet } from "@hot-wallet/sdk/adapter/near";
-import { HOT, verifySignature } from "@hot-wallet/sdk";
+import { verifySignature } from "@hot-wallet/sdk/nep0314";
+import { HOT } from "@hot-wallet/sdk";
 
 const initSelector = (async () => {
   const selector = await setupWalletSelector({ modules: [setupHotWallet()], network: "mainnet" });
