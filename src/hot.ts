@@ -54,7 +54,7 @@ const createIframe = (widget: string) => {
   iframe.style.height = "560px";
 
   connector.style.padding = "16px";
-  connector.style.zIndex = "10000";
+  connector.style.zIndex = "100000000000000";
   connector.style.position = "fixed";
   connector.style.display = "flex";
   connector.style.justifyContent = "center";

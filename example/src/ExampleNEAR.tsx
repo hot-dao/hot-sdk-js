@@ -6,12 +6,16 @@ import { FC, useEffect, useState } from "react";
 
 // Wallet-selector adapter
 import { setupHotWallet } from "@hot-wallet/sdk/adapter/near";
-import { verifySignature } from "@hot-wallet/sdk/nep0314";
-import { HOT } from "@hot-wallet/sdk";
+import { HOT, verifySignature } from "@hot-wallet/sdk";
 
 const initSelector = (async () => {
-  const selector = await setupWalletSelector({ modules: [setupHotWallet()], network: "mainnet" });
-  const modal = setupModal(selector, { contractId: "" });
+  const selector = await setupWalletSelector({
+    randomizeWalletOrder: false,
+    modules: [setupHotWallet()],
+    network: "mainnet",
+  });
+
+  const modal = setupModal(selector, { contractId: "hello.near" });
   return { selector, modal };
 })();
 
@@ -50,12 +54,12 @@ export const ExampleNEAR: FC = () => {
     <div className="view">
       <p>NEAR Example</p>
       <button onClick={() => connect()}>{walletId ? walletId : "Connect"}</button>
-      {walletId != null && <SignMessage />}
+      {walletId != null && <SignMessage wallet={wallet!} />}
     </div>
   );
 };
 
-const SignMessage = () => {
+const SignMessage = ({ wallet }: { wallet: Wallet }) => {
   const singMessage = async () => {
     const nonce = Array.from(window.crypto.getRandomValues(new Uint8Array(32)));
     const request = { nonce, recipient: "Demo app", message: "Hello" };
@@ -66,10 +70,8 @@ const SignMessage = () => {
   };
 
   const sendTx = async () => {
-    // Low level api or use wallet-selector adapter
-    await HOT.request("near:signAndSendTransaction", {
+    wallet.signAndSendTransaction({
       actions: [{ type: "Transfer", params: { deposit: "0" } }],
-      receiverId: "game.hot.tg",
     });
   };
 

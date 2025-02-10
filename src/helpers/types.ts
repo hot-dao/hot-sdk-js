@@ -1,5 +1,5 @@
 import type { SendOptions } from "@solana/web3.js";
-import { InjectedWallet } from "@near-wallet-selector/core/src/lib/wallet/wallet.types";
+import { Optional, Transaction } from "@near-wallet-selector/core";
 import { SignedMessageNEP0413, SignMessageOptionsNEP0413 } from "./nep0314";
 
 export type InjectedState = {
@@ -27,7 +27,7 @@ export interface HotRequest {
   "ton:send": {};
 
   "near:signMessage": SignMessageOptionsNEP0413;
-  "near:signAndSendTransaction": Parameters<InjectedWallet["signAndSendTransaction"]>[0];
+  "near:signAndSendTransactions": { transactions: Array<Optional<Transaction, "signerId">> };
   "near:signIn": {};
   "near:signOut": {};
 
@@ -50,7 +50,7 @@ export interface HotResponse {
   "ton:send": {};
 
   "near:signMessage": SignedMessageNEP0413;
-  "near:signAndSendTransaction": { transaction: string };
+  "near:signAndSendTransactions": { transactions: any[] };
   "near:signIn": { accountId: string; publicKey: string };
   "near:signOut": {};
 
