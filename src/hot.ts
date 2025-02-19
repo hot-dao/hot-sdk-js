@@ -25,6 +25,11 @@ export class RequestFailed extends Error {
   }
 }
 
+export const getExtension = () => {
+  if (typeof window === "undefined") return null;
+  return window.hotExtension;
+};
+
 let connector: HTMLDivElement | undefined;
 if (typeof window !== "undefined") {
   window.addEventListener("message", (e: any) => {

@@ -21,7 +21,7 @@ import {
   VersionedTransaction,
 } from "@solana/web3.js";
 
-import HOT, { wait } from "../hot";
+import HOT, { getExtension, wait } from "../hot";
 
 export const HotWalletName = "HOT" as WalletName<"HOT">;
 
@@ -37,7 +37,7 @@ export class HotWalletAdapter extends BaseMessageSignerWalletAdapter {
 
   private _connecting = false;
   private _publicKey: PublicKey | null = null;
-  private _readyState = window.hotExtension ? WalletReadyState.Unsupported : WalletReadyState.Installed;
+  private _readyState = getExtension() ? WalletReadyState.Unsupported : WalletReadyState.Installed;
 
   get publicKey() {
     return this._publicKey;

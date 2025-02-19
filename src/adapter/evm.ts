@@ -1,4 +1,4 @@
-import HOT from "../hot";
+import HOT, { getExtension } from "../hot";
 import { logo } from "../logo";
 
 declare global {
@@ -140,6 +140,6 @@ const makeProvider = () => {
   return hotProvider;
 };
 
-const hotProvider = window.hotExtension?.evm || makeProvider();
+const hotProvider = getExtension()?.evm || makeProvider();
 
 export { hotProvider };

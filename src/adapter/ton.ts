@@ -1,6 +1,6 @@
 import HOT from "../hot";
 
-if (HOT.isInjected) {
+if (HOT.isInjected && typeof window !== "undefined") {
   // @ts-ignore
   window.hotWallet = {
     tonconnect: {
