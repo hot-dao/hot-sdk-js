@@ -57,6 +57,7 @@ const createIframe = (widget: string) => {
   iframe.style.border = "1px solid #2C3034";
   iframe.style.width = "375px";
   iframe.style.height = "560px";
+  iframe.onclick = (e) => e.stopPropagation();
 
   connector.style.padding = "16px";
   connector.style.zIndex = "100000000000000";
@@ -70,6 +71,10 @@ const createIframe = (widget: string) => {
   connector.style.height = "100%";
   connector.style.background = "rgba(0, 0, 0, 0.1)";
   connector.style.backdropFilter = "blur(24px)";
+  connector.onclick = () => {
+    connector?.remove();
+    connector = undefined;
+  };
 
   document.body.appendChild(connector);
   return connector;

@@ -3,6 +3,7 @@ import { ExampleTON } from "./ExampleTON";
 import { ExampleSolana } from "./ExambleSolana";
 import { ExampleEVM } from "./ExampleEVM";
 import { ExampleNEAR } from "./ExampleNEAR";
+import { ExampleStellar } from "./ExampleStellar";
 
 const App: FC = () => {
   return (
@@ -11,6 +12,7 @@ const App: FC = () => {
       <ExampleSolana />
       <ExampleEVM />
       <ExampleNEAR />
+      <ExampleStellar />
     </>
   );
 };

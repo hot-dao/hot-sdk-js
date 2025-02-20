@@ -9,6 +9,7 @@
     "deploy": "surge ./dist"
   },
   "dependencies": {
+    "@creit.tech/stellar-wallets-kit": "^1.4.1",
     "@hot-wallet/sdk": "../",
     "@near-wallet-selector/core": "^8.9.12",
     "@near-wallet-selector/modal-ui-js": "^8.9.12",

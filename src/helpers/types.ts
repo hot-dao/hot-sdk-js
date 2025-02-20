@@ -31,6 +31,11 @@ export interface HotRequest {
   "near:signIn": {};
   "near:signOut": {};
 
+  "stellar:getAddress": {};
+  "stellar:signMessage": { message: string; accountToSign?: string };
+  "stellar:signAuthEntry": { authEntry: string; accountToSign?: string };
+  "stellar:signTransaction": { xdr: string; accountToSign?: string };
+
   ethereum: {
     account?: { chain: number; address: string | null };
     method: string;
@@ -53,6 +58,11 @@ export interface HotResponse {
   "near:signAndSendTransactions": { transactions: any[] };
   "near:signIn": { accountId: string; publicKey: string };
   "near:signOut": {};
+
+  "stellar:getAddress": { address: string };
+  "stellar:signTransaction": { signedTxXdr: string; signerAddress?: string };
+  "stellar:signAuthEntry": { signedAuthEntry: string; signerAddress?: string };
+  "stellar:signMessage": { signedMessage: string; signerAddress?: string };
 
   initialized: InjectedState;
   ethereum: any;
