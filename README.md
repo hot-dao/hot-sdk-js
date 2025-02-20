@@ -78,6 +78,20 @@ import { HOT } from "@hot-wallet/sdk";
 await HOT.request("ethereum", { ... });
 ```
 
+## Stellar Connect
+
+```ts
+// Compatible with https://github.com/Creit-Tech/Stellar-Wallets-Kit
+import { HotWalletModule } from "@hot-wallet/adapter/stellar";
+
+// Or use low level api
+import { HOT } from "@hot-wallet/sdk";
+await HOT.request("stellar:getAddress", {});
+await HOT.request("stellar:signTransaction", { ... });
+await HOT.request("stellar:signAuthEntry", { ... });
+await HOT.request("stellar:signMessage", { ... });
+```
+
 ## Debug Injected App
 
 Default example app with chains connector:
